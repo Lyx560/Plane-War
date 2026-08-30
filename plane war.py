@@ -103,7 +103,7 @@ class Enemy(pygame.sprite.Sprite):
         if isboss:
             self.kill()
 
-class Tank(pygame.sprite.Sprite):
+class Enemy2(pygame.sprite.Sprite):
     def __init__(self,_9):
         super().__init__()
         self._9 = _9
@@ -120,14 +120,14 @@ class Tank(pygame.sprite.Sprite):
         if isboss:
             self.kill() 
 
-class Tank_Bullet(pygame.sprite.Sprite):
+class Enemy2_Bullet(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((5,10))
         self.image.fill('black')
         self.rect = self.image.get_rect()
-        self.rect.centerx = tank.rect.centerx
-        self.rect.top = tank.rect.top
+        self.rect.centerx = enemy2.rect.centerx
+        self.rect.top = enemy2.rect.top
     def update(self):
         self.rect.y += 6
         if self.rect.top > HEIGHT:
@@ -165,10 +165,10 @@ class Reward(pygame.sprite.Sprite):
             self.kill()
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,_11):
         super().__init__()
-        self.image = pygame.Surface((200,200))
-        self.image.fill('gray')
+        self._11 = _11
+        self.image = self._11
         self.rect = self.image.get_rect()
         self.rect.left = 2000
         self.rect.top = 2000
@@ -209,17 +209,18 @@ _3 = pygame.image.load(resource_path(os.path.join('images', '4.png'))).convert()
 _4 = pygame.image.load(resource_path(os.path.join('images', '8.png'))).convert()
 _5 = pygame.image.load(resource_path(os.path.join('images', '16.png'))).convert()
 _6 = pygame.image.load(resource_path(os.path.join('images', 'boss bullet.png'))).convert()
-_7 = pygame.image.load(resource_path(os.path.join('images', 'player.png'))).convert()
-_8 = pygame.image.load(resource_path(os.path.join('images', 'enemy.png')))
-_9 = pygame.image.load(resource_path(os.path.join('images', 'tank.png'))).convert()
+_7 = pygame.image.load(resource_path(os.path.join('images', 'player.png'))).convert_alpha()
+_8 = pygame.image.load(resource_path(os.path.join('images', 'enemy.png'))).convert_alpha()
+_9 = pygame.image.load(resource_path(os.path.join('images', 'enemy2.png'))).convert_alpha()
 _10 = pygame.image.load(resource_path(os.path.join('images', 'Meteorite.png'))).convert()
+_11 = pygame.image.load(resource_path(os.path.join('images','boss.png'))).convert_alpha()
 player = Player(_7)
-boss = Boss()
+boss = Boss(_11)
 all_sprites = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 enemys = pygame.sprite.Group()
-tanks = pygame.sprite.Group()
-tank_bullets = pygame.sprite.Group()
+enemy2s = pygame.sprite.Group()
+enemy2_bullets = pygame.sprite.Group()
 meteorites = pygame.sprite.Group()
 rewards = pygame.sprite.Group()
 boss_bullets = pygame.sprite.Group()
@@ -229,9 +230,9 @@ for i in range(6):
     all_sprites.add(enemy)
     enemys.add(enemy)
 for i in range(3):
-    tank = Tank(_9)
-    all_sprites.add(tank)
-    tanks.add(tank)
+    enemy2 = Enemy2(_9)
+    all_sprites.add(enemy2)
+    enemy2s.add(enemy2)
 for i in range(2):
     meteorite = Meteorite(_10)
     all_sprites.add(meteorite)
@@ -253,10 +254,10 @@ while running:
                 all_sprites.add(bullet)
                 bullets.add(bullet)
         if event.type == ENEMY_SHOOT_EVENT:
-            for tank in tanks.sprites():
-                tank_bullet = Tank_Bullet()
-                all_sprites.add(tank_bullet)
-                tank_bullets.add(tank_bullet)
+            for enemy2 in enemy2s.sprites():
+                enemy2_bullet = Enemy2_Bullet()
+                all_sprites.add(enemy2_bullet)
+                enemy2_bullets.add(enemy2_bullet)
         if event.type == BB_SHOOT_EVENT and isboss:
             boss_bullet = Boss_Bullet(_6)
             all_sprites.add(boss_bullet)
@@ -282,18 +283,18 @@ while running:
         enemy = Enemy(_8)
         all_sprites.add(enemy)
         enemys.add(enemy)
-    hits3 = pygame.sprite.spritecollide(player,tanks,False)
+    hits3 = pygame.sprite.spritecollide(player,enemy2s,False)
     if hits3:
         messagebox.showinfo('game over','game over')
         running = False
-    hits4 = pygame.sprite.groupcollide(tanks,bullets,True,False)
+    hits4 = pygame.sprite.groupcollide(enemy2s,bullets,True,False)
     if hits4:
         kill_enemys += 1
         kill = True
-        tank = Tank(_9)
-        all_sprites.add(tank)
-        tanks.add(tank)
-    hits5 = pygame.sprite.spritecollide(player,tank_bullets,False)
+        enemy2 = Enemy2(_9)
+        all_sprites.add(enemy2)
+        enemy2s.add(enemy2)
+    hits5 = pygame.sprite.spritecollide(player,enemy2_bullets,False)
     if hits5:
         messagebox.showinfo('game over','game over')
         running = False
