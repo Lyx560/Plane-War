@@ -1,8 +1,10 @@
 import pygame
 import random
-from tkinter import messagebox
+from PyQt6.QtWidgets import QMessageBox,QApplication
 import sys
 import os
+
+qt_app = QApplication(sys.argv)
 
 def resource_path(relative_path):
     """获取打包后资源的绝对路径"""
@@ -35,6 +37,7 @@ class Player(pygame.sprite.Sprite):
         self._7 = _7
         self.image = self._7
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = WIDTH/2
         self.rect.bottom = HEIGHT - 30
 
@@ -59,6 +62,7 @@ class Bullet(pygame.sprite.Sprite):
         self._5 = _5
         self.image = self._1
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = player.rect.centerx
         self.rect.bottom = player.rect.bottom
     def update(self):
@@ -69,21 +73,25 @@ class Bullet(pygame.sprite.Sprite):
             self.image = self._2
             old_center = self.rect.center
             self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image, 127)
             self.rect.center = old_center
         if level == 3:
             self.image = self._3
             old_center = self.rect.center
             self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image, 127)
             self.rect.center = old_center
         if level == 4:
             self.image = self._4
             old_center = self.rect.center
             self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image, 127)
             self.rect.center = old_center
         if level >= 5:
             self.image = self._5
             old_center = self.rect.center
             self.rect = self.image.get_rect()
+            self.mask = pygame.mask.from_surface(self.image, 127)
             self.rect.center = old_center
 
 class Enemy(pygame.sprite.Sprite):
@@ -92,6 +100,7 @@ class Enemy(pygame.sprite.Sprite):
         self._8 = _8
         self.image = self._8
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = random.randint(0,WIDTH)
         self.rect.top = 30
 
@@ -109,6 +118,7 @@ class Enemy2(pygame.sprite.Sprite):
         self._9 = _9
         self.image = self._9
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = random.randint(0,WIDTH)
         self.rect.top = 30
 
@@ -126,6 +136,7 @@ class Enemy2_Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface((5,10))
         self.image.fill('black')
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = enemy2.rect.centerx
         self.rect.top = enemy2.rect.top
     def update(self):
@@ -139,6 +150,7 @@ class Meteorite(pygame.sprite.Sprite):
         self._10 = _10
         self.image = self._10
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = random.randint(0,WIDTH)
         self.rect.top = 30
     def update(self):
@@ -155,6 +167,7 @@ class Reward(pygame.sprite.Sprite):
         self.image = pygame.Surface((15,15))
         self.image.fill('yellow')
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = random.randint(0,WIDTH)
         self.rect.centery = 0
     def update(self):
@@ -170,6 +183,7 @@ class Boss(pygame.sprite.Sprite):
         self._11 = _11
         self.image = self._11
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.left = 2000
         self.rect.top = 2000
     def update(self):
@@ -189,6 +203,7 @@ class Boss_Bullet(pygame.sprite.Sprite):
         self._6 = _6
         self.image = self._6
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = boss.rect.centerx
         self.rect.top = boss.rect.top
     def update(self):
@@ -199,7 +214,7 @@ class Boss_Bullet(pygame.sprite.Sprite):
         if HP <= 0:
             self.kill()
             if win == False:
-                messagebox.showinfo('game win','game win')
+                QMessageBox.information(None,'游戏成功','游戏成功')
                 win = True
             pygame.quit()
         
@@ -263,6 +278,7 @@ while running:
             all_sprites.add(boss_bullet)
             boss_bullets.add(boss_bullet)
     if kill_enemys >= 100 and isboss == False:
+        QMessageBox.information(None,'BOSS来袭','BOSS来袭') 
         isboss = True
         all_sprites.add(boss)
         boss.rect.left = 0
@@ -272,49 +288,59 @@ while running:
         all_sprites.add(reward)
         rewards.add(reward)
         kill = False
-    hits = pygame.sprite.spritecollide(player,enemys,False)
+    CM = pygame.sprite.collide_mask
+
+    hits = pygame.sprite.spritecollide(player, enemys, False, CM)
     if hits:
-        messagebox.showinfo('game over','game over')
+        QMessageBox.information(None, '游戏结束', '游戏结束')
         running = False
-    hits2 = pygame.sprite.groupcollide(enemys,bullets,True,False)
+
+    hits2 = pygame.sprite.groupcollide(enemys, bullets, True, False, CM)
     if hits2:
         kill_enemys += 1
         kill = True
         enemy = Enemy(_8)
         all_sprites.add(enemy)
         enemys.add(enemy)
-    hits3 = pygame.sprite.spritecollide(player,enemy2s,False)
+
+    hits3 = pygame.sprite.spritecollide(player, enemy2s, False, CM)
     if hits3:
-        messagebox.showinfo('game over','game over')
+        QMessageBox.information(None, '游戏结束', '游戏结束')
         running = False
-    hits4 = pygame.sprite.groupcollide(enemy2s,bullets,True,False)
+
+    hits4 = pygame.sprite.groupcollide(enemy2s, bullets, True, False, CM)
     if hits4:
         kill_enemys += 1
         kill = True
         enemy2 = Enemy2(_9)
         all_sprites.add(enemy2)
         enemy2s.add(enemy2)
-    hits5 = pygame.sprite.spritecollide(player,enemy2_bullets,False)
+
+    hits5 = pygame.sprite.spritecollide(player, enemy2_bullets, False, CM)
     if hits5:
-        messagebox.showinfo('game over','game over')
+        QMessageBox.information(None, '游戏结束', '游戏结束')
         running = False
-    hits6 = pygame.sprite.spritecollide(player,meteorites,False)
+
+    hits6 = pygame.sprite.spritecollide(player, meteorites, False, CM)
     if hits6:
-        messagebox.showinfo('game over','game over')
+        QMessageBox.information(None, '游戏结束', '游戏结束')
         running = False
-    hits7 = pygame.sprite.spritecollide(player,rewards,True)
+
+    hits7 = pygame.sprite.spritecollide(player, rewards, True, CM)
     if hits7:
         level += 1
-    hits8 = pygame.sprite.spritecollide(player,boss_bullets,True)
+
+    hits8 = pygame.sprite.spritecollide(player, boss_bullets, True, CM)
     if hits8:
-        messagebox.showinfo('game over','game over')
+        QMessageBox.information(None, '游戏结束', '游戏结束')
         running = False
-    hits9 = pygame.sprite.spritecollide(boss,bullets,True)
+
+    hits9 = pygame.sprite.spritecollide(boss, bullets, True, CM)
     if hits9:
         HP -= 5
 
     all_sprites.update()
-    screen.fill('white')
+    screen.fill((255,255,255))
     all_sprites.draw(screen)
     pygame.display.flip()
 
