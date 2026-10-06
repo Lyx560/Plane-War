@@ -9,7 +9,7 @@
 ## 游戏规则
 - 按左右方向键移动
 - 按空格键发射子弹
-- 每打死十个敌人就会下降一个黄色方块，碰到黄色方块则子弹升级
+- 每打死十个敌人就会下降一个降落伞，碰到或子弹打中降落伞则子弹升级
 - 打死100个敌人后则boss出现，打死boss后则游戏胜利
 - 如果碰到敌人、敌人的子弹或者碰到陨石则游戏结束
 
@@ -24,6 +24,6 @@ A lightweight game built with Python
 ## Game Rules
 - Press the left and right arrow keys to move
 - Press the space bar to fire bullets
-- For every ten enemies killed, a yellow square will drop. Hitting a yellow square will upgrade the bullets
+- For every ten enemies killed, a parachute will drop. If a parachute is touched or hit by bullets, the bullets will be upgraded
 - After defeating 100 enemies, the boss will appear. After defeating the boss, the game is won
 - If the player encounters enemies, enemy bullets, or meteorites, the game ends
