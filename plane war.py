@@ -204,10 +204,10 @@ class Meteorite(pygame.sprite.Sprite):
             self.kill()
 
 class Reward(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,_12):
         super().__init__()
-        self.image = pygame.Surface((15, 15))
-        self.image.fill('yellow')
+        self._12 = _12
+        self.image = self._12
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image, 127)
         self.rect.centerx = random.randint(0, WIDTH)
@@ -269,8 +269,9 @@ _6 = pygame.image.load(resource_path(os.path.join('images', 'boss bullet.png')))
 _7 = pygame.image.load(resource_path(os.path.join('images', 'player.png'))).convert_alpha()
 _8 = pygame.image.load(resource_path(os.path.join('images', 'enemy.png'))).convert_alpha()
 _9 = pygame.image.load(resource_path(os.path.join('images', 'enemy2.png'))).convert_alpha()
-_10 = pygame.image.load(resource_path(os.path.join('images', 'Meteorite.png'))).convert()
+_10 = pygame.image.load(resource_path(os.path.join('images', 'Meteorite.png'))).convert_alpha()
 _11 = pygame.image.load(resource_path(os.path.join('images', 'boss.png'))).convert_alpha()
+_12 = pygame.image.load(resource_path(os.path.join('images', 'reward.png'))).convert_alpha()
 
 # 精灵组与对象（由 reset_game 重建）
 all_sprites = pygame.sprite.Group()
@@ -458,7 +459,7 @@ while running:
             boss.rect.left = 0
             boss.rect.top = 0
         if kill_enemys % 10 == 0 and kill_enemys != 0 and kill:
-            reward = Reward()
+            reward = Reward(_12)
             all_sprites.add(reward)
             rewards.add(reward)
             kill = False
@@ -512,6 +513,10 @@ while running:
         hits9 = pygame.sprite.spritecollide(boss, bullets, True, CM)
         if hits9:
             HP -= 5
+
+        hits10 = pygame.sprite.groupcollide(bullets, rewards, False, True, CM)
+        if hits10:
+            level += 1
 
         all_sprites.update()
         screen.fill((255, 255, 255))
